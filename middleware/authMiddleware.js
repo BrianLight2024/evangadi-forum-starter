@@ -13,7 +13,7 @@ function authMiddleWare(req, res, next) {
   const token = authHeader.split(" ")[1];
 
   try {
-    const { username, userid } = jwt.verify(token, "secret");
+    const { username, userid } = jwt.verify(token, process.env.JWT_SECRET);
     // Pass the execution back to the controller back to main loop
     req.user = { username, userid };
     next();
