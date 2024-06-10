@@ -1,30 +1,35 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import LayOut from "../../Components/LayOut/LayOut";
 import Card from "../../Components/Card/Card";
 import { Link } from "react-router-dom";
 import classes from "./Landing.module.css";
 import { DataContext } from "../../Components/DataProvider/DataProvider";
+import { axiosInstance } from "../../Api/axios";
 
 function Landing() {
   const [{ user }] = useContext(DataContext);
+  const [cards, setCards] = useState([]);
 
-  const cards = [
-    {
-      avatar: "https://via.placeholder.com/50",
-      username: "test-user",
-      title: "what is bootstrap?",
-    },
-    {
-      avatar: "https://via.placeholder.com/50",
-      username: "almaz123",
-      title: "how to center div?",
-    },
-    {
-      avatar: "https://via.placeholder.com/50",
-      username: "ibro123",
-      title: "what is JWT?",
-    },
-  ];
+  // list questions
+  useEffect(() => {
+    const fetchAnswers = async () => {
+      try {
+        await axiosInstance({
+          method: "GET",
+          url: `/questions/list`,
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+          },
+        }).then((response) => {
+          setCards(response.data.questions);
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchAnswers();
+  }, []);
 
   return (
     <LayOut>
@@ -39,15 +44,24 @@ function Landing() {
       </section>
 
       {/* cards section */}
-      <section>
-        {cards.map((card, index) => (
-          <Card
-            key={index}
-            avatar={card.avatar}
-            username={card.username}
-            title={card.title}
-          />
-        ))}
+      <section className={classes.cursor}>
+        {cards.length === 0 ? (
+          <div className={classes.emptyState}>
+            <p>
+              No Questions available at the moment. Please login and check back
+              later.
+            </p>
+          </div>
+        ) : (
+          cards.map((card, index) => (
+            <Card
+              key={index}
+              avatar={card.avatar}
+              username={card.username}
+              title={card.title}
+            />
+          ))
+        )}
       </section>
     </LayOut>
   );

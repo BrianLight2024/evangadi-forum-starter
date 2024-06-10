@@ -47,7 +47,19 @@ async function create(req, res) {
 
 async function list(req, res) {
   try {
-    const [questions] = await dbConnection.query("select * from questions");
+    const [questions] = await dbConnection.query(`
+      SELECT
+        q.questionid,
+        q.userid,
+        q.title,
+        q.description,
+        q.tag,
+        u.username
+      FROM
+        questions q
+      JOIN
+        users u ON q.userid = u.userid;
+    `);
     res.status(StatusCodes.OK).json({
       msg: "questions returned",
       questions,

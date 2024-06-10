@@ -37,6 +37,7 @@ const Auth = () => {
             userid: response.data.userid,
             username: response.data.username,
             firstname: response.data.firstname,
+            token: response.data.token,
           };
 
           dispatch({
@@ -70,6 +71,7 @@ const Auth = () => {
             user: userObject,
           });
         });
+        alert("Successfully signed up to Evangadi.");
         navigate("/");
       }
     } catch (error) {
