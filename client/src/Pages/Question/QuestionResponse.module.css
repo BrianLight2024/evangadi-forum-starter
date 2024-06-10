@@ -1,0 +1,66 @@
+.detail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0rem 12rem;
+}
+
+.cardSection {
+  width: 100%;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.answerList {
+  max-height: 300px;
+  overflow-y: scroll;
+}
+
+.textArea {
+  width: 100%;
+  min-height: 100px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: vertical;
+  margin-top: 2rem;
+}
+
+.postButton {
+  display: block;
+  width: 10%;
+  padding: 10px;
+  background-color: #0b5ed7;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+.postButton:hover {
+  background-color: #0a4abf;
+}
+
+.responseHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.responseHeader__title {
+  display: flex;
+  flex-direction: row;
+  align-items: start;
+  margin-top: 1.5rem;
+}
+
+.responseHeader__title h2 {
+  margin-left: 0.5rem;
+}
+
+.responseHeader__description {
+  margin: 1rem 0;
+}
