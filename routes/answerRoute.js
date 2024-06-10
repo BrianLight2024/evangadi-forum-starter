@@ -1,8 +1,10 @@
 const express = require("express");
 const router = express.Router();
 
-router.get("/all-answers", (req, res) => {
-  res.send("Answer showing");
-});
+// Import the destructured Answer controls
+const { post } = require("../controller/answerController.js");
+
+// post an answer to a answer
+router.post("/post", post);
 
 module.exports = router;
