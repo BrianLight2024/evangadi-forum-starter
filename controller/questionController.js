@@ -73,15 +73,15 @@ async function list(req, res) {
 }
 
 async function get(req, res) {
-  const { questionid } = req.body;
+  const { questionid } = req.query;
+  console.log("params", questionid);
+
   if (!questionid) {
     return res
       .status(StatusCodes.BAD_REQUEST)
       .json({ msg: "Please provide all required fields" });
   }
   try {
-    console.log("questionid", questionid);
-
     // get the Specific Question
     const [questionAnswers] = await dbConnection.query(
       `SELECT
@@ -92,18 +92,22 @@ async function get(req, res) {
         u.username,
         u.firstname,
         u.lastname,
-        u.email
+        u.email,
+        q.title AS question_title,
+        q.description AS question_description
       FROM
         answers a
       JOIN
         users u ON a.userid = u.userid
+      JOIN
+        questions q ON a.questionid = q.questionid
       WHERE
         a.questionid = ?`,
       [questionid]
     );
 
     console.log("questionAnswers", questionAnswers);
-    res.status(StatusCodes.CREATED).json({
+    res.status(StatusCodes.OK).json({
       msg: "All Question Answers returned.",
       questionAnswers,
     });

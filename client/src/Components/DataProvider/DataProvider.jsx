@@ -15,6 +15,6 @@ DataProvider.propTypes = {
   children: PropTypes.node.isRequired,
   reducer: PropTypes.func.isRequired,
   initialState: PropTypes.shape({
-    basket: PropTypes.array,
+    user: PropTypes.array,
   }).isRequired,
 };

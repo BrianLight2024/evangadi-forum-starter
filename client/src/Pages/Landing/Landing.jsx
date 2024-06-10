@@ -56,9 +56,11 @@ function Landing() {
           cards.map((card, index) => (
             <Card
               key={index}
+              questionid={card.questionid}
               avatar={card.avatar}
               username={card.username}
               title={card.title}
+              description={card.description}
             />
           ))
         )}

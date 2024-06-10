@@ -26,7 +26,7 @@ const Header = () => {
           <div>
             <p>How it works</p>
           </div>
-          <Link to={!user && "/auth"}>
+          <Link to={"/auth"}>
             <div className={classes.cursor}>
               {user ? <span>Log Out</span> : <span>Log In</span>}
             </div>

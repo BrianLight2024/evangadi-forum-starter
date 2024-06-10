@@ -1,78 +1,55 @@
+import { useContext, useEffect, useState } from "react";
+import { axiosInstance } from "../../Api/axios";
 import LayOut from "../../Components/LayOut/LayOut";
 import CardDetail from "../../Components/Card/CardDetail";
 import classes from "./QuestionResponse.module.css";
 import { IoArrowForwardCircleSharp } from "react-icons/io5";
+import { DataContext } from "../../Components/DataProvider/DataProvider";
+import { useParams } from "react-router-dom";
 
-const QuestionResponse = ({ title, description, tag }) => {
-  const cards = [
-    {
-      avatar: "https://via.placeholder.com/50",
-      username: "test-user",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum  numquam blanditiis harum quisquam eius sed odit fugiat iusto fuga praesentium optio, eaque rerum! Provident similique accusantium nemo autem.",
-    },
-    {
-      avatar: "https://via.placeholder.com/50",
-      username: "almaz123",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum  numquam blanditiis harum quisquam eius sed odit fugiat iusto fuga praesentium optio, eaque rerum! Provident similique accusantium nemo autem.",
-    },
-    {
-      avatar: "https://via.placeholder.com/50",
-      username: "ibro123",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum  numquam blanditiis harum quisquam eius sed odit fugiat iusto fuga praesentium optio, eaque rerum! Provident similique accusantium nemo autem.",
-    },
-    {
-      avatar: "https://via.placeholder.com/50",
-      username: "ibro123",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum  numquam blanditiis harum quisquam eius sed odit fugiat iusto fuga praesentium optio, eaque rerum! Provident similique accusantium nemo autem.",
-    },
-    {
-      avatar: "https://via.placeholder.com/50",
-      username: "ibro123",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum  numquam blanditiis harum quisquam eius sed odit fugiat iusto fuga praesentium optio, eaque rerum! Provident similique accusantium nemo autem.",
-    },
-    {
-      avatar: "https://via.placeholder.com/50",
-      username: "ibro123",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum  numquam blanditiis harum quisquam eius sed odit fugiat iusto fuga praesentium optio, eaque rerum! Provident similique accusantium nemo autem.",
-    },
-    {
-      avatar: "https://via.placeholder.com/50",
-      username: "ibro123",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum  numquam blanditiis harum quisquam eius sed odit fugiat iusto fuga praesentium optio, eaque rerum! Provident similique accusantium nemo autem.",
-    },
-    {
-      avatar: "https://via.placeholder.com/50",
-      username: "ibro123",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum  numquam blanditiis harum quisquam eius sed odit fugiat iusto fuga praesentium optio, eaque rerum! Provident similique accusantium nemo autem.",
-    },
-    {
-      avatar: "https://via.placeholder.com/50",
-      username: "ibro123",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum  numquam blanditiis harum quisquam eius sed odit fugiat iusto fuga praesentium optio, eaque rerum! Provident similique accusantium nemo autem.",
-    },
-  ];
+const QuestionResponse = () => {
+  const [{ user }] = useContext(DataContext);
+  const { questionid } = useParams();
+  const [cards, setCards] = useState([]);
+  // list all answers to the question
+  useEffect(() => {
+    const fetchQuestionAnswers = async () => {
+      try {
+        await axiosInstance({
+          method: "GET",
+          url: `/questions/get`,
+          params: {
+            questionid,
+          },
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+          },
+        }).then((response) => {
+          console.log(
+            "response.data.questionAnswers",
+            response.data.questionAnswers
+          );
+          setCards(response.data.questionAnswers);
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchQuestionAnswers();
+  }, []);
 
   return (
     <LayOut>
       <div className={classes.responseHeader}>
         <h1> Question </h1>
-        <div className={classes.responseHeader__title}>
+        <div className={classes.responseHeader__title}> 
           <IoArrowForwardCircleSharp size={25} color={"#0b5ed7"} />
-          <h2> What is title ? </h2>
+          <h2> {cards[0]?.question_title} </h2>
         </div>
 
         <h4 className={classes.responseHeader__description}>
-          {" "}
-          How does it work{" "}
+          {cards[0]?.question_description}
         </h4>
 
         <hr />
@@ -89,7 +66,7 @@ const QuestionResponse = ({ title, description, tag }) => {
               key={index}
               avatar={card.avatar}
               username={card.username}
-              description={card.description}
+              answer={card.answer}
             />
           ))}
         </section>

@@ -23,7 +23,7 @@ function Routing() {
       />
       <Route element={<QuestionResponse />} />
       <Route
-        path="/question/:questionId"
+        path="/question/:questionid"
         element={
           <ProtectedRoute
             msg={"You must log in to view questions."}
