@@ -5,7 +5,6 @@ function LayOut({ children }) {
   return (
     <div>
       <Header />
-
       {children}
     </div>
   );

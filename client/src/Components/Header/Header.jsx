@@ -4,8 +4,7 @@ import { Link } from "react-router-dom";
 import { DataContext } from "../DataProvider/DataProvider";
 
 const Header = () => {
-  const [{ basket, user }] = useContext(DataContext);
-
+  const [{ user }] = useContext(DataContext);
   return (
     <section className={classes.fixed}>
       <section className={classes.header__container}>
