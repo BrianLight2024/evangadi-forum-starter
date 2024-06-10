@@ -1,17 +1,57 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { Type } from "../../Utility/action.type";
 import { Link } from "react-router-dom";
 import classes from "./SignUp.module.css";
+import { axiosInstance } from "../../Api/axios";
+import { useNavigate } from "react-router-dom";
+import { DataContext } from "../../Components/DataProvider/DataProvider";
 
 const Auth = () => {
-  const [displayLogin, setDisplayLogin] = useState(false);
+  const navigate = useNavigate();
+
+  const [, dispatch] = useContext(DataContext);
+
+  const [displayLogin, setDisplayLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Handle login/signup logic here
+    // check if it is a login or a register call happening
+    try {
+      if (displayLogin === true) {
+        // Contact with the backend functionality
+        await axiosInstance({
+          method: "POST",
+          url: `/users/login`,
+          data: {
+            email,
+            password,
+          },
+        }).then((response) => {
+          const userObject = {
+            userid: response.data.userid,
+            username: response.data.username,
+            firstname: response.data.firstname,
+          };
+
+          dispatch({
+            type: Type.SET_USER,
+            user: userObject,
+          });
+        });
+      } else {
+        // call the register function
+        console.log("object nan");
+      }
+
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

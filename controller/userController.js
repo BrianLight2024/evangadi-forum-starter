@@ -64,7 +64,7 @@ async function login(req, res) {
   try {
     // Check if User email is found
     const [user] = await dbConnection.query(
-      "select  username , userid , password  from users where  email = ? ",
+      "select  username , firstname, userid , password  from users where  email = ? ",
       [email]
     );
 
@@ -85,14 +85,18 @@ async function login(req, res) {
     }
 
     // On success sign the JWT
-    const { username, userid } = user[0];
+    const { username, userid, firstname } = user[0];
     const token = jwt.sign({ username, userid }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
 
-    return res
-      .status(StatusCodes.OK)
-      .json({ msg: "user login successful", token });
+    return res.status(StatusCodes.OK).json({
+      msg: "user login successful",
+      userid,
+      username,
+      firstname,
+      token,
+    });
   } catch (error) {
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
