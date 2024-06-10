@@ -1,145 +1,126 @@
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import classes from "./SignUp.module.css";
-import { useState, useContext } from "react"; 
-import { ClipLoader } from "react-spinners";
-import { Type } from "../../Utility/action.type";
-import { DataContext } from "../../Components/DataProvider/DataProvider";
 
-function Auth() {
+const Auth = () => {
+  const [displayLogin, setDisplayLogin] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState({
-    signIn: false,
-    signUp: false,
-  });
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
 
-  const navigate = useNavigate();
-  const navStateData = useLocation();
-
-  const [, dispatch] = useContext(DataContext);
-  const authHandler = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (e.target.name == "signin") {
-      setLoading({ ...loading, signIn: true });
-      // await signInWithEmailAndPassword(auth, email, password)
-      //   .then((userInfo) => {
-      //     dispatch({
-      //       type: Type.SET_USER,
-      //       user: userInfo.user,
-      //     });
-      //     setLoading({ ...loading, signIn: false });
-      //     navigate(navStateData?.state?.redirect || "/");
-      //   })
-      //   .catch((error) => {
-      //     setError(error.message);
-      //     setLoading({ ...loading, signIn: false });
-      //   });
-    } else {
-      setLoading({ ...loading, signUp: true });
-      // await createUserWithEmailAndPassword(auth, email, password)
-      //   .then((userInfo) => {
-      //     // Put the User in the state as soon as a new account is created
-      //     dispatch({
-      //       type: Type.SET_USER,
-      //       user: userInfo.user,
-      //     });
-      //     setLoading({ ...loading, signUp: false });
-      //     navigate(navStateData?.state?.redirect || "/");
-      //   })
-      //   .catch((error) => {
-      //     setError(error.message);
-      //     setLoading({ ...loading, signUp: false });
-      //   });
-    }
+    // Handle login/signup logic here
   };
-  return (
-    <section className={classes.login}>
-      {/* Logo */}
-      <Link to="/">
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg"
-          alt="Amazon logo"
-        />
-      </Link>
 
-      {/* form */}
-      <div className={classes.login__container}>
-        <h1>Sign In</h1>
-        {navStateData?.state?.msg && (
-          <small
-            style={{
-              padding: 5,
-              textAlign: "center",
-              color: "red",
-              fontWeight: "bold",
-            }}
-          >
-            {navStateData?.state?.msg}
-          </small>
-        )}
-        <form action="">
-          <div>
-            <label htmlFor="email"> Email</label>
+  return (
+    <div className={classes.authContainer}>
+      <div className={classes.authInnerContainer}>
+        <div className={classes.loginBox}>
+          <h2 className={classes.loginTitle}>
+            {displayLogin ? "Login to your account" : "Create a new account"}
+          </h2>
+          {displayLogin ? (
+            <p className={classes.createAccount}>
+              Don’t have an account?{" "}
+              <span
+                onClick={() => setDisplayLogin(false)}
+                className={classes.toggleForm}
+              >
+                Create a new account
+              </span>
+            </p>
+          ) : (
+            <p className={classes.createAccount}>
+              Already have an account?{" "}
+              <span
+                onClick={() => setDisplayLogin(true)}
+                className={classes.toggleForm}
+              >
+                Login
+              </span>
+            </p>
+          )}
+          <form onSubmit={handleSubmit} className={classes.loginForm}>
+            {!displayLogin && (
+              <div className={classes.nameFields}>
+                <input
+                  type="text"
+                  placeholder="First Name"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  className={classes.inputField}
+                />
+                <input
+                  type="text"
+                  placeholder="Last Name"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  className={classes.inputField}
+                />
+              </div>
+            )}
             <input
+              type="email"
+              placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              type="email"
-              name="email"
-              id="email"
+              className={classes.inputField}
             />
-          </div>
-
-          <div>
-            <label htmlFor="password">Password</label>
             <input
+              type="password"
+              placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              type="password"
-              name="password"
-              id="password"
+              className={classes.inputField}
             />
-          </div>
-
-          <button
-            type="submit"
-            onClick={authHandler}
-            name="signin"
-            className={classes.login__signInButton}
-          >
-            {loading.signIn ? (
-              <ClipLoader color="#000" size={15}></ClipLoader>
+            {!displayLogin ? (
+              <p className={classes.agreeTerms}>
+                I agree to the <u> privacy policy </u> and{" "}
+                <u> terms of service </u>.
+              </p>
             ) : (
-              "Sign In"
+              <Link to="/forgot-password" className={classes.forgotPassword}>
+                Forgot password?
+              </Link>
             )}
+            <button type="submit" className={classes.loginButton}>
+              {displayLogin ? "Login" : "Agree and Join"}
+            </button>
+
+            <span
+              className={classes.account}
+              onClick={() => setDisplayLogin(true)}
+            >
+              {displayLogin ? "" : " Already have an account?"}
+            </span>
+          </form>
+        </div>
+        <div className={classes.aboutSection}>
+          <h2 className={classes.aboutTitle}>About</h2>
+          <h1 className={classes.networkTitle}>Evangadi Networks</h1>
+          <p className={classes.aboutText}>
+            No matter what stage of life you are in, whether you’re just
+            starting elementary school or being promoted to CEO of a Fortune 500
+            company, you have much to offer to those who are trying to follow in
+            your footsteps.
+          </p>
+          <p className={classes.aboutText}>
+            Whether you are willing to share your knowledge or you are just
+            looking to meet mentors of your own, please start by joining the
+            network here.
+          </p>
+          <button
+            className={classes.createAccountButton}
+            onClick={() => setDisplayLogin(false)}
+          >
+            {"CREATE A NEW ACCOUNT"}
           </button>
-        </form>
-
-        {/* agreement */}
-        <p>
-          By signing-in you agree to the AMAZON FAKE CLONE Conditions of Use &
-          Sale. Please see our Privacy Notice, our Cookies Notice and our
-          Interest-Based Ads Notice.
-        </p>
-
-        {/* create account btn */}
-        <button
-          type="submit"
-          onClick={authHandler}
-          name="signup"
-          className={classes.login__registerButton}
-        >
-          {loading.signUp ? (
-            <ClipLoader color="#000" size={15}></ClipLoader>
-          ) : (
-            "Create your Amazon Account"
-          )}
-        </button>
-        {error && <small className={classes.login__error}>{error}</small>}
+        </div>
       </div>
-    </section>
+    </div>
   );
-}
+};
 
 export default Auth;
