@@ -41,12 +41,23 @@ async function register(req, res) {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     // Register User
-    await dbConnection.query(
+    const [result] = await dbConnection.query(
       "INSERT INTO users( username, firstname, lastname, email, password) VALUES (?,?,?,?,?)",
       [username, firstname, lastname, email, hashedPassword]
     );
-    res.status(StatusCodes.CREATED).json({ msg: "user created" });
+
+    const [userCreated] = await dbConnection.query(
+      "select  username , firstname, userid from users where userid = ?   ",
+      [result.insertId]
+    );
+    res.status(StatusCodes.CREATED).json({
+      msg: "user created",
+      username: userCreated[0].username,
+      userid: userCreated[0].userid,
+      firstname: userCreated[0].firstname,
+    });
   } catch (error) {
+    console.log("error", error);
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ msg: "Internal Error , something went wrong, try again later!" });

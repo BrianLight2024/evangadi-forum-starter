@@ -14,8 +14,9 @@ const Auth = () => {
   const [displayLogin, setDisplayLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [firstname, setFirstName] = useState("");
+  const [lastname, setLastName] = useState("");
+  const [username, setUserName] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,12 +44,34 @@ const Auth = () => {
             user: userObject,
           });
         });
+        navigate("/");
       } else {
         // call the register function
-        console.log("object nan");
-      }
+        // Contact with the backend functionality
+        await axiosInstance({
+          method: "POST",
+          url: `/users/register`,
+          data: {
+            email,
+            password,
+            username,
+            firstname,
+            lastname,
+          },
+        }).then((response) => {
+          const userObject = {
+            userid: response.data.userid,
+            username: response.data.username,
+            firstname: response.data.firstname,
+          };
 
-      navigate("/");
+          dispatch({
+            type: Type.SET_USER,
+            user: userObject,
+          });
+        });
+        navigate("/");
+      }
     } catch (error) {
       console.error(error);
     }
@@ -88,14 +111,22 @@ const Auth = () => {
                 <input
                   type="text"
                   placeholder="First Name"
-                  value={firstName}
+                  value={firstname}
                   onChange={(e) => setFirstName(e.target.value)}
+                  className={classes.inputField}
+                />
+
+                <input
+                  type="text"
+                  placeholder="User Name"
+                  value={username}
+                  onChange={(e) => setUserName(e.target.value)}
                   className={classes.inputField}
                 />
                 <input
                   type="text"
                   placeholder="Last Name"
-                  value={lastName}
+                  value={lastname}
                   onChange={(e) => setLastName(e.target.value)}
                   className={classes.inputField}
                 />
