@@ -1,5 +1,6 @@
 import LayOut from "../../Components/LayOut/LayOut";
 import Card from "../../Components/Card/Card";
+import { Link } from "react-router-dom";
 import classes from "./Landing.module.css";
 
 function Landing() {
@@ -25,7 +26,9 @@ function Landing() {
     <LayOut>
       {/* Header section */}
       <section className={classes.header}>
-        <button className={classes.askButton}>Ask Question</button>
+        <Link to={"/ask"}>
+          <button className={classes.askButton}>Ask Question</button>
+        </Link>
         <div className={classes.welcome}>
           Welcome: <span className={classes.username}>test-user</span>
         </div>

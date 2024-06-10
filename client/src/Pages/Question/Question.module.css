@@ -1,0 +1,75 @@
+.formContainer button {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  margin: 1rem 10rem;
+}
+.formContainer h1 {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  margin: 1rem 10rem;
+}
+.summary {
+  display: flex;
+  flex-direction: row;
+  align-items: start;
+  margin-top: 1.5rem;
+  margin-left: 12rem;
+}
+
+.summary h4 {
+  margin-left: 0.5rem;
+}
+
+.postTitle {
+  text-align: center;
+}
+
+input {
+  display: block; /* Display the input as block */
+  width: 70%; /* Set the width to fill its container */
+  padding: 10px; /* Add padding for better spacing */
+  margin: 1rem 10rem;
+  font-size: 16px; /* Set the font size */
+  font-family: Arial, sans-serif; /* Set a readable font family */
+  border: 1px solid #ccc; /* Add a border for clarity */
+  border-radius: 5px; /* Add border radius for rounded corners */
+  box-sizing: border-box; /* Include padding and border in the width */
+}
+
+input::placeholder {
+  color: #999; /* Set placeholder color */
+}
+
+textarea {
+  display: block; /* Display the input as block */
+  width: 70%;
+  min-height: 100px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: vertical;
+  margin: 1rem 10rem;
+  border-radius: 5px; /* Add border radius for rounded corners */
+  box-sizing: border-box; /* Include padding and border in the width */
+}
+
+textarea::placeholder {
+  color: #999; /* Set placeholder color */
+}
+
+button {
+  display: block;
+  width: 8%;
+  padding: 10px;
+  background-color: #0b5ed7;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-top: 10px;
+  margin-left: 1rem;
+}
