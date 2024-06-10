@@ -1,15 +1,12 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { axiosInstance } from "../../Api/axios";
 import LayOut from "../../Components/LayOut/LayOut";
 import CardDetail from "../../Components/Card/CardDetail";
 import classes from "./QuestionResponse.module.css";
 import { IoArrowForwardCircleSharp } from "react-icons/io5";
-import { DataContext } from "../../Components/DataProvider/DataProvider";
 import { useParams } from "react-router-dom";
 
 const QuestionResponse = () => {
-  const [{ user }] = useContext(DataContext);
-
   const userId = localStorage.getItem("user_id");
   const token = localStorage.getItem("token");
 
@@ -40,7 +37,7 @@ const QuestionResponse = () => {
   // Call on load
   useEffect(() => {
     fetchQuestionAnswers();
-  }, []);
+  });
 
   // Post answer
   const postAnswer = async () => {

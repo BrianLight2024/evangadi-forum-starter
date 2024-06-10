@@ -1,18 +1,12 @@
-import { useContext } from "react";
 import classes from "./Header.module.css";
 import { Link } from "react-router-dom";
-import { DataContext } from "../DataProvider/DataProvider";
 
 const Header = () => {
-  const [{ user }] = useContext(DataContext);
-
   const userId = localStorage.getItem("user_id");
-  const token = localStorage.getItem("token");
 
   const handleLogout = () => {
     localStorage.removeItem("user_id");
     localStorage.removeItem("token");
-    window.location("/auth");
   };
 
   return (
