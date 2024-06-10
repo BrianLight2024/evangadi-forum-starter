@@ -24,12 +24,10 @@ async function create(req, res) {
       "INSERT INTO questions( questionid, userid, title, description, tag) VALUES (?,?,?,?,?)",
       [questionid, userid, title, description, tag]
     );
-    console.log("result", result);
     const [questionCreated] = await dbConnection.query(
       "select questionid, userid, title, description, tag from questions where id = ?   ",
       [result.insertId]
     );
-    console.log("questionCreated", questionCreated);
     res.status(StatusCodes.CREATED).json({
       msg: "question created",
       questionid: questionCreated[0].questionid,
@@ -38,7 +36,6 @@ async function create(req, res) {
       description: questionCreated[0].description,
     });
   } catch (error) {
-    console.log("error", error);
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ msg: "Internal Error , something went wrong, try again later!" });
@@ -58,14 +55,15 @@ async function list(req, res) {
       FROM
         questions q
       JOIN
-        users u ON q.userid = u.userid;
+        users u ON q.userid = u.userid
+      ORDER BY
+        q.questionid DESC;
     `);
     res.status(StatusCodes.OK).json({
       msg: "questions returned",
       questions,
     });
   } catch (error) {
-    console.log("error", error);
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ msg: "Internal Error , something went wrong, try again later!" });
@@ -74,7 +72,6 @@ async function list(req, res) {
 
 async function get(req, res) {
   const { questionid } = req.query;
-  console.log("params", questionid);
 
   if (!questionid) {
     return res
@@ -106,13 +103,11 @@ async function get(req, res) {
       [questionid]
     );
 
-    console.log("questionAnswers", questionAnswers);
     res.status(StatusCodes.OK).json({
       msg: "All Question Answers returned.",
       questionAnswers,
     });
   } catch (error) {
-    console.log("error", error);
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ msg: "Internal Error , something went wrong, try again later!" });

@@ -2,10 +2,15 @@ import { useState } from "react";
 import { IoArrowForwardCircleSharp } from "react-icons/io5";
 import classes from "./Question.module.css";
 import LayOut from "../../Components/LayOut/LayOut";
+import { axiosInstance } from "../../Api/axios";
+import { useNavigate } from "react-router-dom";
 
 function Question() {
   const [questionTitle, setQuestionTitle] = useState("");
   const [questionDetail, setQuestionDetail] = useState("");
+  const userId = localStorage.getItem("user_id");
+  const token = localStorage.getItem("token");
+  const navigate = useNavigate();
 
   const steps = [
     {
@@ -21,11 +26,28 @@ function Question() {
       value: "Review your question and post it here.",
     },
   ];
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("Question Title:", questionTitle);
-    console.log("Question Detail:", questionDetail);
-    // You can add logic here to submit the form data to a backend or perform other actions
+    // added logic here to submit the form data to a backend or perform other actions
+    try {
+      await axiosInstance({
+        method: "POST",
+        url: `/questions/create`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        data: {
+          userid: userId,
+          title: questionTitle,
+          description: questionDetail,
+        },
+      }).then((response) => {
+        alert(`Created the question : ${response?.data?.title}`);
+        navigate("/");
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

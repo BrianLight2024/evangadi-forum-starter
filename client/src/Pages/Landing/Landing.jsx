@@ -9,7 +9,7 @@ import { axiosInstance } from "../../Api/axios";
 function Landing() {
   const [{ user }] = useContext(DataContext);
   const [cards, setCards] = useState([]);
-
+  const token = localStorage.getItem("token");
   // list questions
   useEffect(() => {
     const fetchAnswers = async () => {
@@ -18,7 +18,7 @@ function Landing() {
           method: "GET",
           url: `/questions/list`,
           headers: {
-            Authorization: `Bearer ${user?.token}`,
+            Authorization: `Bearer ${token}`,
           },
         }).then((response) => {
           setCards(response.data.questions);

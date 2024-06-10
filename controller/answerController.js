@@ -17,19 +17,16 @@ async function post(req, res) {
       "INSERT INTO answers( userid, questionid, answer) VALUES (?,?,?)",
       [userid, questionid, answer]
     );
-    console.log("result", result);
 
     const [answerPosted] = await dbConnection.query(
       "select   userid, questionid, answer from answers where answerid = ?   ",
       [result.insertId]
     );
-    console.log("answerPosted", answerPosted);
     res.status(StatusCodes.CREATED).json({
       msg: "Answer posted.",
       answerPosted,
     });
   } catch (error) {
-    console.log("error", error);
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ msg: "Internal Error , something went wrong, try again later!" });

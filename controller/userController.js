@@ -57,7 +57,6 @@ async function register(req, res) {
       firstname: userCreated[0].firstname,
     });
   } catch (error) {
-    console.log("error", error);
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ msg: "Internal Error , something went wrong, try again later!" });

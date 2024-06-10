@@ -44,6 +44,10 @@ const Auth = () => {
             type: Type.SET_USER,
             user: userObject,
           });
+
+          // Save the user id and token to local storage
+          localStorage.setItem("user_id", userObject.userid);
+          localStorage.setItem("token", userObject.token);
         });
         navigate("/");
       } else {

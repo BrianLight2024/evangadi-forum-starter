@@ -9,41 +9,66 @@ import { useParams } from "react-router-dom";
 
 const QuestionResponse = () => {
   const [{ user }] = useContext(DataContext);
+
+  const userId = localStorage.getItem("user_id");
+  const token = localStorage.getItem("token");
+
   const { questionid } = useParams();
   const [cards, setCards] = useState([]);
-  // list all answers to the question
-  useEffect(() => {
-    const fetchQuestionAnswers = async () => {
-      try {
-        await axiosInstance({
-          method: "GET",
-          url: `/questions/get`,
-          params: {
-            questionid,
-          },
-          headers: {
-            Authorization: `Bearer ${user?.token}`,
-          },
-        }).then((response) => {
-          console.log(
-            "response.data.questionAnswers",
-            response.data.questionAnswers
-          );
-          setCards(response.data.questionAnswers);
-        });
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  const [answer, setPostAnswer] = useState("");
 
+  // list all answers to the question
+  const fetchQuestionAnswers = async () => {
+    try {
+      await axiosInstance({
+        method: "GET",
+        url: `/questions/get`,
+        params: {
+          questionid,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }).then((response) => {
+        setCards(response.data.questionAnswers);
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // Call on load
+  useEffect(() => {
     fetchQuestionAnswers();
   }, []);
 
+  // Post answer
+  const postAnswer = async () => {
+    try {
+      await axiosInstance({
+        method: "POST",
+        url: `/answers/post`,
+        data: {
+          userid: userId,
+          questionid,
+          answer,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }).then(() => {
+        setPostAnswer("");
+        fetchQuestionAnswers();
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <LayOut>
       <div className={classes.responseHeader}>
         <h1> Question </h1>
-        <div className={classes.responseHeader__title}> 
+        <div className={classes.responseHeader__title}>
           <IoArrowForwardCircleSharp size={25} color={"#0b5ed7"} />
           <h2> {cards[0]?.question_title} </h2>
         </div>
@@ -74,8 +99,13 @@ const QuestionResponse = () => {
         <textarea
           placeholder="Your answer..."
           className={classes.textArea}
+          value={answer}
+          onChange={(event) => setPostAnswer(event.target.value)}
+          required
         ></textarea>
-        <button className={classes.postButton}>Post Answer</button>
+        <button className={classes.postButton} onClick={postAnswer}>
+          Post Answer
+        </button>
       </div>
     </LayOut>
   );

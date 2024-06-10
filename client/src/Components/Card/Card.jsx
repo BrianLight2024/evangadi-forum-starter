@@ -10,7 +10,6 @@ import { DataContext } from "../DataProvider/DataProvider";
 const Card = ({ username, title, description, questionid }) => {
   const navigate = useNavigate();
   const [, dispatch] = useContext(DataContext);
-  console.log("title", title, description, questionid);
   const redirectToAnswer = (e) => {
     e.preventDefault();
     const questionObject = {

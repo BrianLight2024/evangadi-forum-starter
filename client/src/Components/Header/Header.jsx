@@ -5,6 +5,16 @@ import { DataContext } from "../DataProvider/DataProvider";
 
 const Header = () => {
   const [{ user }] = useContext(DataContext);
+
+  const userId = localStorage.getItem("user_id");
+  const token = localStorage.getItem("token");
+
+  const handleLogout = () => {
+    localStorage.removeItem("user_id");
+    localStorage.removeItem("token");
+    window.location("/auth");
+  };
+
   return (
     <section className={classes.fixed}>
       <section className={classes.header__container}>
@@ -28,7 +38,11 @@ const Header = () => {
           </div>
           <Link to={"/auth"}>
             <div className={classes.cursor}>
-              {user ? <span>Log Out</span> : <span>Log In</span>}
+              {userId ? (
+                <span onClick={handleLogout}>Log Out</span>
+              ) : (
+                <span>Log In</span>
+              )}
             </div>
           </Link>
         </div>

@@ -28,11 +28,11 @@ const answerRoutes = require("./routes/answerRoute");
 // user routes middleware
 app.use("/api/users", userRoutes);
 
-// Question routes authMiddleWare
-app.use("/api/questions", questionRoutes);
+// Question routes
+app.use("/api/questions", authMiddleWare, questionRoutes);
 
-// Answer routes authMiddleWare
-app.use("/api/answers", answerRoutes);
+// Answer routes
+app.use("/api/answers", authMiddleWare, answerRoutes);
 
 app.listen(port, (err) => {
   if (err) {
