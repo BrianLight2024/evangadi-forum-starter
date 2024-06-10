@@ -1,0 +1,68 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.fixed {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header__container {
+  background-color: #e6e6e6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: white;
+  height: 70px;
+  padding: 0 20px;
+}
+
+.logo__container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 250px;
+}
+
+.logo__container img {
+  width: 80%;
+  padding-top: 5px;
+  margin-left: 20px;
+  vertical-align: middle;
+}
+
+.cursor {
+  cursor: pointer;
+  color: #d44; /* Reddish color for Log In/Log Out button */
+  font-weight: bold;
+}
+
+.home_container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 20px;
+}
+
+.home_container div,
+.home_container a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+}
+
+.home_container p {
+  font-size: 16px;
+  color: gray;
+  font-weight: 600; /* Semi-bold */
+}
+
+@media screen and (max-width: 576px) {
+  .header__container {
+    flex-direction: column !important;
+    height: auto;
+  }
+}

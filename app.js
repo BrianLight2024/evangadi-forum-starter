@@ -5,6 +5,11 @@ const express = require("express");
 const app = express();
 const port = 5500;
 
+// CORS
+const cors = require("cors");
+
+app.use(cors());
+
 // Any request passes through this middleware  to extract json data
 app.use(express.json());
 
