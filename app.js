@@ -29,10 +29,10 @@ const answerRoutes = require("./routes/answerRoute");
 app.use("/api/users", userRoutes);
 
 // Question routes
-app.use("/api/questions", authMiddleWare, questionRoutes);
+app.use("/api/questions", questionRoutes);
 
 // Answer routes
-app.use("/api/answers", authMiddleWare, answerRoutes);
+app.use("/api/answers", answerRoutes);
 
 app.listen(port, (err) => {
   if (err) {
