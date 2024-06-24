@@ -9,64 +9,77 @@ const { v4: uuidv4 } = require("uuid");
 
 async function create(req, res) {
   const { userid, title, description } = req.body;
+
   if (!userid || !title || !description) {
     return res
       .status(StatusCodes.BAD_REQUEST)
       .json({ msg: "Please provide all required fields" });
   }
+
   try {
-    // set the UUID here
     const questionid = uuidv4();
     const tag = "evangadi";
+    const createdAt = new Date(); // Current timestamp
 
-    // Add Question
-    const [result] = await dbConnection.query(
-      "INSERT INTO questions( questionid, userid, title, description, tag) VALUES (?,?,?,?,?)",
-      [questionid, userid, title, description, tag]
-    );
-    const [questionCreated] = await dbConnection.query(
-      "select questionid, userid, title, description, tag from questions where id = ?   ",
-      [result.insertId]
-    );
+    // Add Question using PostgreSQL syntax
+    const insertQuery = `
+      INSERT INTO questions (questionid, userid, title, description, tag, created_at)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING questionid, userid, title, description, tag, created_at;
+    `;
+
+    const values = [questionid, userid, title, description, tag, createdAt];
+
+    const {
+      rows: [questionCreated],
+    } = await dbConnection.query(insertQuery, values);
+
     res.status(StatusCodes.CREATED).json({
-      msg: "question created",
-      questionid: questionCreated[0].questionid,
-      username: questionCreated[0].username,
-      title: questionCreated[0].title,
-      description: questionCreated[0].description,
+      msg: "Question created",
+      questionid: questionCreated.questionid,
+      userid: questionCreated.userid,
+      title: questionCreated.title,
+      description: questionCreated.description,
+      created_at: questionCreated.created_at,
     });
   } catch (error) {
+    console.error("Error creating question:", error);
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ msg: "Internal Error , something went wrong, try again later!" });
+      .json({ msg: "Internal Error, something went wrong, try again later!" });
   }
 }
 
 async function list(req, res) {
   try {
-    const [questions] = await dbConnection.query(`
+    const query = `
       SELECT
         q.questionid,
         q.userid,
         q.title,
         q.description,
         q.tag,
-        u.username
+        u.username,
+        q.created_at
       FROM
         questions q
       JOIN
         users u ON q.userid = u.userid
       ORDER BY
-        q.questionid DESC;
-    `);
+        q.created_at DESC;
+    `;
+
+    const { rows: questions } = await dbConnection.query(query);
+
     res.status(StatusCodes.OK).json({
-      msg: "questions returned",
+      msg: "Questions returned",
       questions,
     });
   } catch (error) {
+    console.error("Error fetching questions:", error);
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ msg: "Internal Error , something went wrong, try again later!" });
+      .json({ msg: "Internal Error, something went wrong, try again later!" });
   }
 }
 
@@ -78,10 +91,10 @@ async function get(req, res) {
       .status(StatusCodes.BAD_REQUEST)
       .json({ msg: "Please provide all required fields" });
   }
+
   try {
-    // get the Specific Question
-    const [questionAnswers] = await dbConnection.query(
-      `SELECT
+    const query = `
+      SELECT
         a.answerid,
         a.questionid,
         a.userid,
@@ -99,18 +112,22 @@ async function get(req, res) {
       JOIN
         questions q ON a.questionid = q.questionid
       WHERE
-        a.questionid = ?`,
-      [questionid]
-    );
+        a.questionid = $1;
+    `;
+
+    const { rows: questionAnswers } = await dbConnection.query(query, [
+      questionid,
+    ]);
 
     res.status(StatusCodes.OK).json({
       msg: "All Question Answers returned.",
       questionAnswers,
     });
   } catch (error) {
+    console.error("Error fetching question answers:", error);
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ msg: "Internal Error , something went wrong, try again later!" });
+      .json({ msg: "Internal Error, something went wrong, try again later!" });
   }
 }
 module.exports = { create, list, get };
