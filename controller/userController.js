@@ -20,51 +20,68 @@ async function register(req, res) {
 
   try {
     // Check if User is already registered
-    const [user] = await dbConnection.query(
-      "select username, userid from users where username = ? or email = ? ",
-      [username, email]
-    );
+    const userQuery =
+      "SELECT username, userid FROM users WHERE username = $1 OR email = $2";
+    const { rows: user } = await dbConnection.query(userQuery, [
+      username,
+      email,
+    ]);
     if (user.length > 0) {
       return res
         .status(StatusCodes.BAD_REQUEST)
-        .json({ msg: "user already existed" });
+        .json({ msg: "User already exists" });
     }
+
     // Check if password is strong
     if (password.length < 8) {
       return res
         .status(StatusCodes.BAD_REQUEST)
-        .json({ msg: "Password must be atleast 8 characters" });
+        .json({ msg: "Password must be at least 8 characters" });
     }
+
     // Encrypt password before storing
     const salt = await bcrypt.genSalt(10);
-
     const hashedPassword = await bcrypt.hash(password, salt);
 
     // Register User
-    const [result] = await dbConnection.query(
-      "INSERT INTO users( username, firstname, lastname, email, password) VALUES (?,?,?,?,?)",
-      [username, firstname, lastname, email, hashedPassword]
-    );
+    const insertQuery = `
+      INSERT INTO users (username, firstname, lastname, email, password)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING userid`;
+    const { rows: result } = await dbConnection.query(insertQuery, [
+      username,
+      firstname,
+      lastname,
+      email,
+      hashedPassword,
+    ]);
 
-    const [userCreated] = await dbConnection.query(
-      "select  username , firstname, userid from users where userid = ?   ",
-      [result.insertId]
-    );
+    const userId = result[0].userid;
+
+    const userCreatedQuery =
+      "SELECT username, firstname, userid FROM users WHERE userid = $1";
+    const { rows: userCreated } = await dbConnection.query(userCreatedQuery, [
+      userId,
+    ]);
+
     res.status(StatusCodes.CREATED).json({
-      msg: "user created",
+      msg: "User created",
       username: userCreated[0].username,
       userid: userCreated[0].userid,
       firstname: userCreated[0].firstname,
     });
   } catch (error) {
-    return res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ msg: "Internal Error , something went wrong, try again later!" });
+    console.error("error", error);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      msg: "Internal error, something went wrong, try again later!",
+      err: error,
+    });
   }
 }
 
 async function login(req, res) {
   const { email, password } = req.body;
+
   if (!email || !password) {
     return res
       .status(StatusCodes.BAD_REQUEST)
@@ -73,10 +90,9 @@ async function login(req, res) {
 
   try {
     // Check if User email is found
-    const [user] = await dbConnection.query(
-      "select  username , firstname, userid , password  from users where  email = ? ",
-      [email]
-    );
+    const userQuery =
+      "SELECT username, firstname, userid, password FROM users WHERE email = $1";
+    const { rows: user } = await dbConnection.query(userQuery, [email]);
 
     if (user.length === 0) {
       return res
@@ -101,16 +117,17 @@ async function login(req, res) {
     });
 
     return res.status(StatusCodes.OK).json({
-      msg: "user login successful",
+      msg: "User login successful",
       userid,
       username,
       firstname,
       token,
     });
   } catch (error) {
-    return res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ msg: "Internal Error , something went wrong, try again later!" });
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      msg: "Internal error, something went wrong, try again later!",
+      err: error,
+    });
   }
 }
 
